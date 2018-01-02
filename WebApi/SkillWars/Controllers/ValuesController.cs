@@ -18,9 +18,9 @@ namespace SkillWars.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
+        public async Task<string> Get(int id)
+        {            
+            throw new Exception();           
         }
 
         // POST api/values
