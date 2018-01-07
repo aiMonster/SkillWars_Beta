@@ -11,7 +11,7 @@ namespace Common.Helpers
         public static string Encript(string inputText)
         {
             byte[] encrypted = null;
-            string key = "_SKILL_WARS_24_BYTES!_";
+            string key = "SW_SKILL_WARS_24_BYTES!_";
 
             using (TripleDESCryptoServiceProvider myTripleDES = new TripleDESCryptoServiceProvider())
             {
@@ -30,7 +30,7 @@ namespace Common.Helpers
             var encrypted = Convert.FromBase64String(inputText);
 
             string roundtrip = null;
-            string key = "_SKILL_WARS_24_BYTES!_";
+            string key = "SW_SKILL_WARS_24_BYTES!_";
 
             using (TripleDESCryptoServiceProvider myTripleDES = new TripleDESCryptoServiceProvider())
             {

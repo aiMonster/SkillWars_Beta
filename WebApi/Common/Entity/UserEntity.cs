@@ -1,5 +1,6 @@
 ﻿using Common.DTO.Account;
 using Common.Helpers;
+using Common.Interfaces.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace Common.Entity
 {
-    //*T add interface implementation
-    public class UserEntity //:IUser
+    
+    public class UserEntity : IUser
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -19,11 +20,16 @@ namespace Common.Entity
 
         public string Email { get; set; }
 
+        public string NickName { get; set; }
+        public string PhoneNumber { get; set; }
+
         public string Password { get; set; }        
 
         public DateTime RegistrationDate { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
+
+        public int Balance { get; set; }
                 
 
         public UserEntity() { }
@@ -31,14 +37,15 @@ namespace Common.Entity
         public UserEntity(RegistrationDTO data)
         {
             Email = data.Email;
+            NickName = data.Email;
             Password = TripleDESCryptHelper.Encript(data.Password);
 
             RegistrationDate = DateTime.Now;
             IsEmailConfirmed = false;
+            PhoneNumber = data.PhoneNumber;
             
         }
-
-        //public string NickName { get; set; }
+        
         //public string PhoneNumber { get; set; }
         //public DateTime BirthDate { get; set; }
     }

@@ -50,13 +50,18 @@
     <Compile Include="DTO\Account\UserDTO.cs" />
     <Compile Include="DTO\Communication\Error.cs" />
     <Compile Include="DTO\Communication\Response.cs" />
+    <Compile Include="Entity\TokenEntity.cs" />
     <Compile Include="Entity\UserEntity.cs" />
+    <Compile Include="Enums\OperationResults.cs" />
+    <Compile Include="Helpers\TimerConfigurator.cs" />
     <Compile Include="Helpers\TripleDESCryptHelper.cs" />
+    <Compile Include="Interfaces\Entities\IUser.cs" />
+    <Compile Include="Interfaces\Services\IAccountService.cs" />
+    <Compile Include="Interfaces\Services\IEmailService.cs" />
+    <Compile Include="Interfaces\Services\ILoginService.cs" />
+    <Compile Include="Interfaces\Services\ITimeredFunctionsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

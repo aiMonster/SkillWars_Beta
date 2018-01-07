@@ -13,6 +13,16 @@ using Swashbuckle.AspNetCore.Swagger;
 using Serilog;
 using Serilog.Events;
 using SkillWars.Extentions;
+using DataAccessLayer.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Services.LoginService;
+using Microsoft.CodeAnalysis;
+using Common.Interfaces.Services;
+using Services.AccountService;
+using Services.SendingServices;
+using Services.TimeredFunctionsService;
 
 namespace SkillWars
 {
@@ -25,7 +35,7 @@ namespace SkillWars
                  .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                  //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                  .AddJsonFile($"appsettings.Development.json", optional: true)
-                 //.AddJsonFile($"EmailNotificationsLocalization.json", optional: true)
+                 .AddJsonFile($"EmailNotificationsLocalization.json", optional: true)
                  .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -38,18 +48,64 @@ namespace SkillWars
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "SkillWars API", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
+                {
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey",
+                });
             });
+
+            services.AddTransient(_ => Configuration);
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = AuthOptions.ISSUER,
+
+                        ValidateAudience = true,
+                        ValidAudience = AuthOptions.AUDIENCE,
+
+                        ValidateLifetime = true,
+
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+
+            services.AddDbContext<MSContext>(
+                options =>
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly("DataAccessLayer"));
+                });
+
+            services.AddCors();
+
+            services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<ITimeredFunctionsService, TimeredFunctionsService>();
 
             services.AddMvc();
         }
 
         
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, MSContext context, ITimeredFunctionsService timeredService)
         {
             loggerFactory.AddConsole();
             SetUpLogger(env, loggerFactory);
 
             app.UseExceptionHandlerMiddleware();
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
+            await timeredService.Setup();
+            EnsureDataBaseReady(context);
+            app.UseAuthentication();
             //app.UseDefaultFiles();
             //app.UseStaticFiles();
 
@@ -58,12 +114,7 @@ namespace SkillWars
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-
+            
             app.UseMvc();
         }
 
@@ -90,7 +141,20 @@ namespace SkillWars
                     .RollingFile(@"Logs\Fatal-{Date}.log")).CreateLogger();
 
             loggerFactory.AddSerilog(logger);
+        }
 
+        private void EnsureDataBaseReady(MSContext context)
+        {
+            try
+            {
+                context.Database.EnsureCreated();
+                context.Database.Migrate();
+            }
+            catch 
+            {
+                context.Database.EnsureDeleted();
+                context.Database.Migrate();
+            }
         }
     }
 }

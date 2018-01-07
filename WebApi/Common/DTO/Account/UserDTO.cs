@@ -9,15 +9,23 @@ namespace Common.DTO.Account
 {
     public class UserDTO
     {
-        public string Login { get; set; }
-        public string Password { get; set; }
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public string NickName { get; set; }
+        public bool IsEmailConfirmed { get; set; }
+        public int Balance { get; set; }
+        public string PhoneNumber { get; set; }
 
         public UserDTO() { }
 
         public UserDTO(UserEntity entity)
         {
-            Login = entity.Email;
-            Password = entity.Password;
+            Id = entity.Id;
+            Email = entity.Email;
+            NickName = entity.NickName;
+            IsEmailConfirmed = entity.IsEmailConfirmed;
+            Balance = entity.Balance;
+            PhoneNumber = entity.PhoneNumber;
         }
     }
 }
