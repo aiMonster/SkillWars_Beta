@@ -10,7 +10,7 @@ namespace Common.DTO.Account
     public class RegistrationDTO
     {
         [Required]
-        [EmailAddress]
+        //[EmailAddress]
         public string Email { get; set; }        
 
         [Required]

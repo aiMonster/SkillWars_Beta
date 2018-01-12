@@ -104,7 +104,7 @@ namespace SkillWars
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             await timeredService.Setup();
-            EnsureDataBaseReady(context);
+            //EnsureDataBaseReady(context);
             app.UseAuthentication();
             //app.UseDefaultFiles();
             //app.UseStaticFiles();

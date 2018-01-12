@@ -15,6 +15,7 @@ namespace DataAccessLayer.Context
 
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<TokenEntity> Tokens { get; set; }
+        //public DbSet<ConfirmationPasswordEntity> ConfirmationPasswords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

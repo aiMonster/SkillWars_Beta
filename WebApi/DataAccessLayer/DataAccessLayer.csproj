@@ -103,25 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\MSContext.cs" />
-    <Compile Include="Migrations\20180102180339_Initial.cs" />
-    <Compile Include="Migrations\20180102180339_Initial.designer.cs">
-      <DependentUpon>20180102180339_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20180103093825_addedTokenEntity.cs" />
-    <Compile Include="Migrations\20180103093825_addedTokenEntity.designer.cs">
-      <DependentUpon>20180103093825_addedTokenEntity.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20180103095234_addedNickName.cs" />
-    <Compile Include="Migrations\20180103095234_addedNickName.designer.cs">
-      <DependentUpon>20180103095234_addedNickName.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20180105175806_addedBalance.cs" />
-    <Compile Include="Migrations\20180105175806_addedBalance.designer.cs">
-      <DependentUpon>20180105175806_addedBalance.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20180106200228_addedPhoneField.cs" />
-    <Compile Include="Migrations\20180106200228_addedPhoneField.designer.cs">
-      <DependentUpon>20180106200228_addedPhoneField.cs</DependentUpon>
+    <Compile Include="Migrations\20180112153137_initial.cs" />
+    <Compile Include="Migrations\20180112153137_initial.designer.cs">
+      <DependentUpon>20180112153137_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\MSContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

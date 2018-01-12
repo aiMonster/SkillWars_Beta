@@ -1,5 +1,6 @@
 ﻿using Common.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,18 @@ namespace Services.SendingServices
         private readonly string _email;
         private readonly string _password;
         private readonly string _host;
+        private static ILogger<EmailService> _logger;
+        private static object _smtpLocker = new object();
+        private static int _messagesSended;
 
-        public EmailService(IConfigurationRoot root)
+        public EmailService(IConfigurationRoot root, ILogger<EmailService> logger)
         {
+            _logger = logger;
             var config = root.GetSection("SmtpConfig");
             _email = config["email"];
             _password = config["password"];
             _host = config["host"];
+            _messagesSended = 0;
         }
 
         public async Task SendMail(string email, string message, string subject, string filePath = null)
@@ -50,16 +56,46 @@ namespace Services.SendingServices
                     Message.Attachments.Add(new Attachment(filePath));
                 }
 
-                using (SmtpClient Smtp = new SmtpClient()
+                lock (_smtpLocker)
                 {
-                    Host = _host,
-                    EnableSsl = true,
-                    Credentials = new System.Net.NetworkCredential(_email, _password)
-                })
-                {
-                    Smtp.Send(Message);
+                    using (SmtpClient Smtp = new SmtpClient()
+                    {
+                        Host = _host,
+                        Credentials = new System.Net.NetworkCredential(_email, _password),
+                        EnableSsl = true,
+                        Timeout = 20_000,
+                        //DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory  =(
+                        //PickupDirectoryLocation = location,
+                    })
+                    {
+                        Smtp.SendCompleted += SendCompleted;
+                        _logger.LogInformation($"Try send email message at: {DateTime.UtcNow}, messageId: {_messagesSended}");
+                        _messagesSended++;
+                        Smtp.Send(Message);
+                        Smtp.Dispose();
+                    }
                 }
+
+                //using (SmtpClient Smtp = new SmtpClient()
+                //{
+                //    Host = _host,
+                //    EnableSsl = true,
+                //    Credentials = new System.Net.NetworkCredential(_email, _password)
+                //})
+                //{
+                //    Smtp.Send(Message);
+                //}
             }
         }
+
+        private static void SendCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            _logger.LogInformation($"Email message send callback called at: {DateTime.UtcNow}, messageId: {_messagesSended}");
+            if (e.Error != null)
+            {
+                _logger.LogError(0, e.Error, "Smtp Error:");
+            }
+        }
+
     }
 }

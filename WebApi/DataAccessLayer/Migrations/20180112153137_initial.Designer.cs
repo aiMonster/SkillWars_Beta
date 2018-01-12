@@ -11,8 +11,8 @@ using System;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MSContext))]
-    [Migration("20180105175806_addedBalance")]
-    partial class addedBalance
+    [Migration("20180112153137_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,6 +51,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("NickName");
 
                     b.Property<string>("Password");
+
+                    b.Property<string>("PhoneNumber");
 
                     b.Property<DateTime>("RegistrationDate");
 

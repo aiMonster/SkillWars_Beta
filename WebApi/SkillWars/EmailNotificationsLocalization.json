@@ -1,5 +1,7 @@
 ﻿{
   "Register": "Для підтвкрдження емейл перейдіть - ",
-  "EmailConfirmed": "Your email have been successfully confirmed"
+  "EmailConfirmed": "Your email have been successfully confirmed",
+  "RestorePassword": "Вітаємо! Для того, щоб відновити пароль, enter this code: ",
+  "ChangePassword": "Вітаємо! Ваш пароль успішно змінено"
 }
 

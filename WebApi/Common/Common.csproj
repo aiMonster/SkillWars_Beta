@@ -46,10 +46,13 @@
   <ItemGroup>
     <Compile Include="Authentication\LoginRequest.cs" />
     <Compile Include="Authentication\TokenResponse.cs" />
+    <Compile Include="DTO\Account\ChangePasswordRequest.cs" />
     <Compile Include="DTO\Account\RegistrationDTO.cs" />
+    <Compile Include="DTO\Account\RestorePasswordRequest.cs" />
     <Compile Include="DTO\Account\UserDTO.cs" />
     <Compile Include="DTO\Communication\Error.cs" />
     <Compile Include="DTO\Communication\Response.cs" />
+    <Compile Include="Entity\ConfirmationPasswordEntity.cs" />
     <Compile Include="Entity\TokenEntity.cs" />
     <Compile Include="Entity\UserEntity.cs" />
     <Compile Include="Enums\OperationResults.cs" />
@@ -61,6 +64,7 @@
     <Compile Include="Interfaces\Services\ILoginService.cs" />
     <Compile Include="Interfaces\Services\ITimeredFunctionsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\Extensions.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

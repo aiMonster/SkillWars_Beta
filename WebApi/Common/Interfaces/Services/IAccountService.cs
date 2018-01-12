@@ -17,9 +17,9 @@ namespace Common.Interfaces.Services
         Task<Response<UserDTO>> RemoveUser(int id);
 
         Task<Response<UserDTO>> GetUserById(int userId);
-        //Task<Response<bool>> ChangePassword(ChangePasswordRequest request, string userId);
+        Task<Response<bool>> ChangePassword(ChangePasswordRequest request, int userId);
         Task<List<UserDTO>> GetUsers();
-        //Task<Response<bool>> RestorePassword(string email);
-        //Task<Response<bool>> RestorePasswordConfirm(string token, string newPassword);
+        Task<Response<bool>> RestorePassword(string email);
+        Task<Response<bool>> RestorePasswordConfirm(string confirmationToken, string newPassword);
     }
 }

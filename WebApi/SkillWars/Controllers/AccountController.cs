@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.Utils;
 
 namespace SkillWars.Controllers
 {
@@ -49,6 +50,24 @@ namespace SkillWars.Controllers
             return Ok();
         }
 
+        [Authorize]
+        [HttpPut("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userId = Convert.ToInt32(User.GetUserId());
+            var response = await _accountService.ChangePassword(request, userId);
+            if (response.Error != null)
+            {
+                return StatusCode(response.Error.ErrorCode, response.Error);
+            }
+            return Ok(response.Data);
+        }
+
         [AllowAnonymous]
         [HttpGet("Confirm/{token}")]
         public async Task<IActionResult> ConfirmEmail([FromRoute]string token)
@@ -73,6 +92,17 @@ namespace SkillWars.Controllers
         public async Task<IActionResult> GetUserById([FromRoute]int id)
         {
             var response = await _accountService.GetUserById(id);
+            if (response.Error != null)
+            {
+                return StatusCode(response.Error.ErrorCode, response.Error);
+            }
+            return Ok(response.Data);
+        }
+
+        [HttpGet("CurrentUser")]
+        public async Task<IActionResult> GetCurrentUser()
+        {            
+            var response = await _accountService.GetUserById(Convert.ToInt32(User.GetUserId()));
             if (response.Error != null)
             {
                 return StatusCode(response.Error.ErrorCode, response.Error);
@@ -128,6 +158,30 @@ namespace SkillWars.Controllers
         public async Task<List<UserDTO>> GetUsers()
         {      
             return await _accountService.GetUsers();
+        }
+
+        [AllowAnonymous]
+        [HttpPut("ForgotPassword")]
+        public async Task<IActionResult> RestorePassword([FromBody] string requestEmail)
+        {
+            var response = await _accountService.RestorePassword(requestEmail);
+            if (response.Error != null)
+            {
+                return StatusCode(response.Error.ErrorCode, response.Error);
+            }
+            return Ok(response.Data);
+        }
+
+        [AllowAnonymous]
+        [HttpPut("ForgotPasswordConfirm")]
+        public async Task<IActionResult> RestorePasswordConfirm([FromBody] RestorePasswordRequest request)
+        {
+            var response = await _accountService.RestorePasswordConfirm(request.Token, request.NewPassword);
+            if (response.Error != null)
+            {
+                return StatusCode(response.Error.ErrorCode, response.Error);
+            }
+            return Ok(response.Data);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Common.Entity
         public UserEntity(RegistrationDTO data)
         {
             Email = data.Email;
-            NickName = data.Email;
+            NickName = data.Email.Split('@')[0];
             Password = TripleDESCryptHelper.Encript(data.Password);
 
             RegistrationDate = DateTime.Now;
