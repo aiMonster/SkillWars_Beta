@@ -64,7 +64,7 @@ namespace Services.AccountService
             await _context.SaveChangesAsync();
 
             #if release
-            var apiPath = _config["AppLinks:frontPath"] + "api/Account/Confirm/" + confirmationToken;
+            var apiPath = _config["AppLinks:frontPath"] + "confirm-register?token=" + confirmationToken;
             var link = "<a href='" + apiPath + "'>link</a>";
 
             await _emailService.SendMail(user.Email, _config["Register"] + link, "Registration");
@@ -207,7 +207,7 @@ namespace Services.AccountService
             await _context.SaveChangesAsync();
 
 #if release
-            var apiPath = _config["AppLinks:frontPath"] + "/#/restore-password;token=" + confirmationToken;
+            var apiPath = _config["AppLinks:frontPath"] + "restore-password?token=" + confirmationToken;
             var link = "<a href='" + apiPath + "'>link</a>";
 
             await _emailService.SendMail(user.Email, _config["RestorePassword"] + link, "Restore Password");

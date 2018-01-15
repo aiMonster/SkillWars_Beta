@@ -18,6 +18,13 @@ namespace SkillWars.Controllers
             return new string[] { "Nice Job", "you are authorized" };
         }
 
+        [AllowAnonymous]
+        [HttpPut("ForgotPassword")]
+        public async Task<IActionResult> RestorePassword([FromBody] string requestEmail)
+        {            
+            return Ok(requestEmail);
+        }
+
         // GET api/values/5       
         [HttpGet("{id}")]
         public async Task<string> Get(int id)

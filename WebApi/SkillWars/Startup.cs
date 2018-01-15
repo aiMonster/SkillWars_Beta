@@ -23,6 +23,7 @@ using Common.Interfaces.Services;
 using Services.AccountService;
 using Services.SendingServices;
 using Services.TimeredFunctionsService;
+using Services.LobbieService;
 
 namespace SkillWars
 {
@@ -89,6 +90,7 @@ namespace SkillWars
             services.AddTransient<ILoginService, LoginService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<ILobbieService, LobbieService>();
             services.AddTransient<ITimeredFunctionsService, TimeredFunctionsService>();
 
             services.AddMvc();

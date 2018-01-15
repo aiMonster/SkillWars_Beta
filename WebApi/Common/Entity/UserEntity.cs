@@ -30,9 +30,14 @@ namespace Common.Entity
         public bool IsEmailConfirmed { get; set; }
 
         public int Balance { get; set; }
+
+        public List<UserTeamEntity> UserTeams { get; set; }
                 
 
-        public UserEntity() { }
+        public UserEntity()
+        {
+            UserTeams = new List<UserTeamEntity>();
+        }
 
         public UserEntity(RegistrationDTO data)
         {
@@ -43,10 +48,9 @@ namespace Common.Entity
             RegistrationDate = DateTime.Now;
             IsEmailConfirmed = false;
             PhoneNumber = data.PhoneNumber;
-            
+            UserTeams = new List<UserTeamEntity>();
+
         }
-        
-        //public string PhoneNumber { get; set; }
         //public DateTime BirthDate { get; set; }
     }
 }
