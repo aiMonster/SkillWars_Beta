@@ -20,41 +20,30 @@ namespace SkillWars.Controllers
         {
             _lobbieService = lobbieService;
         }
-
-        [AllowAnonymous]
-        //[Authorize]
+        
+        [Authorize]
         [HttpPost]
-        public async Task<LobbieInfo> CreateLobbie([FromBody]LobbieDTO request)
+        public async Task<IActionResult> CreateLobbie([FromBody]LobbieDTO request)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
-
-            //var userId = Convert.ToInt32(User.GetUserId());
-            return await _lobbieService.CreateLobbie(request);
-            //if (response.Error != null)
-            //{
-            //    return StatusCode(response.Error.ErrorCode, response.Error);
-            //}
-            //return response;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }            
+            return Ok(await _lobbieService.CreateLobbieAsync(request));            
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<List<LobbieInfo>> GetLobbies()
+        public async Task<IActionResult> GetLobbies()
         {
-            return await _lobbieService.GetLobbies();
+            return Ok(await _lobbieService.GetLobbiesAsync());
         }
 
         [AllowAnonymous]        
         [HttpGet("{id}/Players")]
         public async Task<IActionResult> GetPlayers([FromRoute]int id)
-        {
-            
-
-            //var userId = Convert.ToInt32(User.GetUserId());
-            var response =  await _lobbieService.GetPlayers(id);
+        {  
+            var response =  await _lobbieService.GetPlayersAsync(id);
             if (response.Error != null)
             {
                 return StatusCode(response.Error.ErrorCode, response.Error);
@@ -64,7 +53,7 @@ namespace SkillWars.Controllers
 
         [Authorize]
         [HttpPut("Teams/{teamId}/Participate")]
-        public async Task<IActionResult> ParticipateLobbie([FromRoute] int teamId, string password = "")
+        public async Task<IActionResult> ParticipateLobbie([FromRoute] int teamId,[FromBody] string password)
         {
             var response = await _lobbieService.ParticipateTeam(Convert.ToInt32(User.GetUserId()), teamId, password);
             if (response.Error != null)

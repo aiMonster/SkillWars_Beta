@@ -10,9 +10,9 @@ namespace Common.Interfaces.Services
 {
     public interface ILobbieService
     {
-        Task<LobbieInfo> CreateLobbie(LobbieDTO lobbie);
-        Task<List<LobbieInfo>> GetLobbies();
-        Task<Response<List<TeamInfo>>> GetPlayers(int lobbieId);
+        Task<LobbieInfo> CreateLobbieAsync(LobbieDTO lobbie);
+        Task<List<LobbieInfo>> GetLobbiesAsync();
+        Task<Response<List<TeamInfo>>> GetPlayersAsync(int lobbieId);
         Task<Response<bool>> ParticipateTeam(int userId, int teamId, string password);
         Task<Response<bool>> LeaveTeam(int userId, int teamId);
     }

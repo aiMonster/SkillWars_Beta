@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\BetAttribute.cs" />
     <Compile Include="Authentication\LoginRequest.cs" />
     <Compile Include="Authentication\TokenResponse.cs" />
     <Compile Include="DTO\Account\ChangePasswordRequest.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="DTO\Communication\Response.cs" />
     <Compile Include="DTO\Lobbie\LobbieDTO.cs" />
     <Compile Include="DTO\Lobbie\LobbieInfo.cs" />
+    <Compile Include="DTO\Lobbie\ParticipateLobbieRequest.cs" />
     <Compile Include="DTO\Lobbie\TeamInfo.cs" />
     <Compile Include="Entity\ConfirmationPasswordEntity.cs" />
     <Compile Include="Entity\LobbieEntity.cs" />
