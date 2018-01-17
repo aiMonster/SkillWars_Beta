@@ -91,7 +91,12 @@ namespace Services.LobbieService
             }
             else if(team.Lobbie.Status != LobbieStatusTypes.Expectation)
             {
-                response.Error = new Error(203, "Lobbie already started game Idiot!");
+                response.Error = new Error(203, "Lobbie already started game or canceled or finished Idiot!");
+                return response;
+            }
+            else if((await _context.Users.FirstOrDefaultAsync(u => u.Id == userId)).Balance < team.Lobbie.Bet)
+            {
+                response.Error = new Error(203, "Not enought money Idiot!");
                 return response;
             }
             else if(team.Lobbie.IsPrivate && (String.IsNullOrEmpty(password) || team.Lobbie.Password != TripleDESCryptHelper.Encript(password)))
@@ -99,6 +104,11 @@ namespace Services.LobbieService
                 response.Error = new Error(203, "Not correct password Idiot!");
                 return response;
             } 
+            else if(team.UserTeams.Count == team.Lobbie.AmountPlayers/2)
+            {
+                response.Error = new Error(203, "Team is full Idiot!");
+                return response;
+            }
 
             team.UserTeams.Add(new UserTeamEntity() { UserId = userId, TeamId = teamId });
             await _context.SaveChangesAsync();
@@ -128,6 +138,14 @@ namespace Services.LobbieService
             }
             _context.UserTeams.Remove(part);           
             await _context.SaveChangesAsync();
+
+            //var lobbie = await _context.Lobbies.Where(l => l.Id == part.Team.Lobbie.Id).Include(l => l.Teams).ThenInclude(t => t.UserTeams).FirstOrDefaultAsync();
+            //if(lobbie.Teams[0].UserTeams.Count == 0 && lobbie.Teams[1].UserTeams.Count == 0)
+            //{
+            //    lobbie.Status = LobbieStatusTypes.Canceled;
+            //    await _context.SaveChangesAsync();
+            //}
+
             response.Data = true;
             return response;
         }
