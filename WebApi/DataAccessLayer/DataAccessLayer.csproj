@@ -103,9 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\MSContext.cs" />
-    <Compile Include="Migrations\20180115102142_addedLobbies.cs" />
-    <Compile Include="Migrations\20180115102142_addedLobbies.designer.cs">
-      <DependentUpon>20180115102142_addedLobbies.cs</DependentUpon>
+    <Compile Include="Migrations\20180208104819_initial.cs" />
+    <Compile Include="Migrations\20180208104819_initial.designer.cs">
+      <DependentUpon>20180208104819_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\MSContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

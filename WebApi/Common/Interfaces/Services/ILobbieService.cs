@@ -12,8 +12,9 @@ namespace Common.Interfaces.Services
     {
         Task<LobbieInfo> CreateLobbieAsync(LobbieDTO lobbie);
         Task<List<LobbieInfo>> GetLobbiesAsync();
-        Task<Response<List<TeamInfo>>> GetPlayersAsync(int lobbieId);
-        Task<Response<bool>> ParticipateTeam(int userId, int teamId, string password);
-        Task<Response<bool>> LeaveTeam(int userId, int teamId);
+        Task<Response<TeamDTO>> GetPlayersAsync(int lobbieId);
+        Task<Response<bool>> ParticipateTeam(int userId, ParticipateLobbieRequest request);
+        Task<Response<bool>> LeaveTeam(int userId, int lobbieId);
+        Task<Response<LobbieInfo>> RemoveLobbie(int lobbieId);
     }
 }

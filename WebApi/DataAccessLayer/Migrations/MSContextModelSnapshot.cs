@@ -54,6 +54,8 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<int>("LobbieId");
 
+                    b.Property<int>("Type");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LobbieId");
@@ -107,7 +109,14 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<int>("TeamId");
 
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("LobbieId");
+
                     b.HasKey("UserId", "TeamId");
+
+                    b.HasAlternateKey("Id");
 
                     b.HasIndex("TeamId");
 

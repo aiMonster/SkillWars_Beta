@@ -12,8 +12,8 @@ using System;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MSContext))]
-    [Migration("20180115102142_addedLobbies")]
-    partial class addedLobbies
+    [Migration("20180208104819_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,6 +54,8 @@ namespace DataAccessLayer.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("LobbieId");
+
+                    b.Property<int>("Type");
 
                     b.HasKey("Id");
 
@@ -108,7 +110,14 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<int>("TeamId");
 
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("LobbieId");
+
                     b.HasKey("UserId", "TeamId");
+
+                    b.HasAlternateKey("Id");
 
                     b.HasIndex("TeamId");
 

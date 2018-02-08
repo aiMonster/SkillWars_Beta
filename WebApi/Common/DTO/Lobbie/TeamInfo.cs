@@ -1,5 +1,6 @@
 ﻿using Common.DTO.Account;
 using Common.Entity;
+using Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,19 +13,21 @@ namespace Common.DTO.Lobbie
     {
         public int Id { get; set; }
 
-        public int LobbieId { get; set; }
-        public List<UserDTO> Users { get; set; }
+        //public int LobbieId { get; set; }
+        public TeamTypes TeamType { get; set; }
+        public List<UserInfo> Users { get; set; }
 
         public TeamInfo() { }
 
         public TeamInfo(TeamEntity entity, List<UserEntity> users)
         {
             Id = entity.Id;
-            LobbieId = entity.LobbieId;
-            Users = new List<UserDTO>();
+            TeamType = entity.Type;
+            //LobbieId = entity.LobbieId;
+            Users = new List<UserInfo>();
             foreach(var u in users)
             {
-                Users.Add(new UserDTO(u));
+                Users.Add(new UserInfo(u));
             }
             //entity.
         }

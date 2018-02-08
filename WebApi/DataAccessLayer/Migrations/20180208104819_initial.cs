@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DataAccessLayer.Migrations
 {
-    public partial class addedLobbies : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,8 @@ namespace DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    LobbieId = table.Column<int>(nullable: false)
+                    LobbieId = table.Column<int>(nullable: false),
+                    Type = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,11 +92,15 @@ namespace DataAccessLayer.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false),
-                    TeamId = table.Column<int>(nullable: false)
+                    TeamId = table.Column<int>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    LobbieId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserTeams", x => new { x.UserId, x.TeamId });
+                    table.UniqueConstraint("AK_UserTeams_Id", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UserTeams_Teams_TeamId",
                         column: x => x.TeamId,

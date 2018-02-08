@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,6 +17,8 @@ namespace Common.Entity
 
         public int LobbieId { get; set; }
         public LobbieEntity Lobbie { get; set; }
+
+        public TeamTypes Type { get; set; }
 
         public List<UserTeamEntity> UserTeams { get; set; }
         public TeamEntity()

@@ -20,7 +20,7 @@ namespace SkillWars.Controllers
         {
             _lobbieService = lobbieService;
         }
-        
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateLobbie([FromBody]LobbieDTO request)
@@ -28,8 +28,8 @@ namespace SkillWars.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }            
-            return Ok(await _lobbieService.CreateLobbieAsync(request));            
+            }
+            return Ok(await _lobbieService.CreateLobbieAsync(request));
         }
 
         [AllowAnonymous]
@@ -39,11 +39,11 @@ namespace SkillWars.Controllers
             return Ok(await _lobbieService.GetLobbiesAsync());
         }
 
-        [AllowAnonymous]        
+        [AllowAnonymous]
         [HttpGet("{id}/Players")]
         public async Task<IActionResult> GetPlayers([FromRoute]int id)
-        {  
-            var response =  await _lobbieService.GetPlayersAsync(id);
+        {
+            var response = await _lobbieService.GetPlayersAsync(id);
             if (response.Error != null)
             {
                 return StatusCode(response.Error.ErrorCode, response.Error);
@@ -52,10 +52,10 @@ namespace SkillWars.Controllers
         }
 
         [Authorize]
-        [HttpPut("Teams/{teamId}/Participate")]
-        public async Task<IActionResult> ParticipateLobbie([FromRoute] int teamId,[FromBody] string password)
+        [HttpPut("Teams/Participate")]
+        public async Task<IActionResult> ParticipateLobbie([FromBody] ParticipateLobbieRequest request)
         {
-            var response = await _lobbieService.ParticipateTeam(Convert.ToInt32(User.GetUserId()), teamId, password);
+            var response = await _lobbieService.ParticipateTeam(Convert.ToInt32(User.GetUserId()), request);
             if (response.Error != null)
             {
                 return StatusCode(response.Error.ErrorCode, response.Error);
@@ -64,10 +64,22 @@ namespace SkillWars.Controllers
         }
 
         [Authorize]
-        [HttpPut("Teams/{teamId}/Leave")]
-        public async Task<IActionResult> LeaveLobbie([FromRoute] int teamId)
+        [HttpPut("{lobbieId}/Leave")]
+        public async Task<IActionResult> LeaveLobbie([FromRoute] int lobbieId)
         {
-            var response = await _lobbieService.LeaveTeam(Convert.ToInt32(User.GetUserId()), teamId);
+            var response = await _lobbieService.LeaveTeam(Convert.ToInt32(User.GetUserId()), lobbieId);
+            if (response.Error != null)
+            {
+                return StatusCode(response.Error.ErrorCode, response.Error);
+            }
+            return Ok(response.Data);
+        }
+
+        [AllowAnonymous]
+        [HttpDelete("{lobbieId}")]
+        public async Task<IActionResult> RemoveLobbie([FromRoute] int lobbieId)
+        {
+            var response = await _lobbieService.RemoveLobbie(lobbieId);
             if (response.Error != null)
             {
                 return StatusCode(response.Error.ErrorCode, response.Error);

@@ -51,11 +51,13 @@
     <Compile Include="DTO\Account\RegistrationDTO.cs" />
     <Compile Include="DTO\Account\RestorePasswordRequest.cs" />
     <Compile Include="DTO\Account\UserDTO.cs" />
+    <Compile Include="DTO\Account\UserInfo.cs" />
     <Compile Include="DTO\Communication\Error.cs" />
     <Compile Include="DTO\Communication\Response.cs" />
     <Compile Include="DTO\Lobbie\LobbieDTO.cs" />
     <Compile Include="DTO\Lobbie\LobbieInfo.cs" />
     <Compile Include="DTO\Lobbie\ParticipateLobbieRequest.cs" />
+    <Compile Include="DTO\Lobbie\TeamDTO.cs" />
     <Compile Include="DTO\Lobbie\TeamInfo.cs" />
     <Compile Include="Entity\ConfirmationPasswordEntity.cs" />
     <Compile Include="Entity\LobbieEntity.cs" />
@@ -65,6 +67,7 @@
     <Compile Include="Entity\UserTeamEntity.cs" />
     <Compile Include="Enums\LobbieStatusTypes.cs" />
     <Compile Include="Enums\OperationResults.cs" />
+    <Compile Include="Enums\TeamTypes.cs" />
     <Compile Include="Helpers\TimerConfigurator.cs" />
     <Compile Include="Helpers\TripleDESCryptHelper.cs" />
     <Compile Include="Interfaces\Entities\IUser.cs" />

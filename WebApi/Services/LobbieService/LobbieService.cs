@@ -30,8 +30,8 @@ namespace Services.LobbieService
             await _context.Lobbies.AddAsync(entity);
             await _context.SaveChangesAsync();
             
-            await _context.Teams.AddAsync(new TeamEntity(entity.Id));
-            await _context.Teams.AddAsync(new TeamEntity(entity.Id));
+            await _context.Teams.AddAsync(new TeamEntity(entity.Id) { Type = TeamTypes.FirstTeam });
+            await _context.Teams.AddAsync(new TeamEntity(entity.Id) { Type = TeamTypes.SecondTeam });
             await _context.SaveChangesAsync();
 
             return new LobbieInfo(entity);
@@ -40,9 +40,9 @@ namespace Services.LobbieService
         public async Task<List<LobbieInfo>> GetLobbiesAsync() =>
             new List<LobbieInfo>(await _context.Lobbies.Select(e => new LobbieInfo(e)).ToListAsync());        
 
-        public async Task<Response<List<TeamInfo>>> GetPlayersAsync(int lobbieId)
+        public async Task<Response<TeamDTO>> GetPlayersAsync(int lobbieId)
         {
-            var response = new Response<List<TeamInfo>>() { Data = new List<TeamInfo>() };
+            var response = new Response<TeamDTO>() { Data = new TeamDTO() };
             
             if (await _context.Lobbies.AsNoTracking().FirstOrDefaultAsync(l => l.Id == lobbieId) == null)
             {
@@ -53,17 +53,21 @@ namespace Services.LobbieService
             var teams = _context.Teams.Where(t => t.LobbieId == lobbieId).AsNoTracking(); 
             await teams.ForEachAsync(t =>
             {                
-                response.Data.Add(new TeamInfo(t,
+                response.Data.Teams.Add(new TeamInfo(t,
                     _context.UserTeams.Where(ut => ut.TeamId == t.Id)
                        .AsNoTracking()
                        .Include(ut => ut.User)
                        .Select(ut => ut.User).ToList()
-                    ));                
-            });            
+                    ));
+                response.Data.LobbieId = t.LobbieId;
+            });     
+             
             return response;
         }
 
-        public async Task<Response<bool>> ParticipateTeam(int userId, int teamId, string password)
+
+
+        public async Task<Response<bool>> ParticipateTeam(int userId, ParticipateLobbieRequest request)
         {
             Response<bool> response = new Response<bool>();
 
@@ -79,10 +83,11 @@ namespace Services.LobbieService
                 return response;
             }
 
-            var team = await _context.Teams.Where(t => t.Id == teamId)
+            var team = await _context.Teams.Where(t => t.LobbieId == request.LobbieId && t.Type == request.TeamType)
                                             .Include(p => p.Lobbie)
                                             .Include(p => p.UserTeams)
                                             .FirstOrDefaultAsync();
+
             
             if (team == null)
             {
@@ -99,7 +104,7 @@ namespace Services.LobbieService
                 response.Error = new Error(203, "Not enought money Idiot!");
                 return response;
             }
-            else if(team.Lobbie.IsPrivate && (String.IsNullOrEmpty(password) || team.Lobbie.Password != TripleDESCryptHelper.Encript(password)))
+            else if(team.Lobbie.IsPrivate && (String.IsNullOrEmpty(request.Password) || team.Lobbie.Password != TripleDESCryptHelper.Encript(request.Password)))
             {
                 response.Error = new Error(203, "Not correct password Idiot!");
                 return response;
@@ -110,19 +115,19 @@ namespace Services.LobbieService
                 return response;
             }
 
-            team.UserTeams.Add(new UserTeamEntity() { UserId = userId, TeamId = teamId });
+            team.UserTeams.Add(new UserTeamEntity() { UserId = userId, TeamId = team.Id, LobbieId = team.LobbieId });
             await _context.SaveChangesAsync();
 
             response.Data = true;
             return response;
         }
 
-        public async Task<Response<bool>> LeaveTeam(int userId, int teamId)
+        public async Task<Response<bool>> LeaveTeam(int userId, int lobbieId)
         {
             Response<bool> response = new Response<bool>();            
 
             var part = await _context.UserTeams
-                                     .Where(u => u.TeamId == teamId && u.UserId == userId)
+                                     .Where(u => u.LobbieId == lobbieId && u.UserId == userId)
                                      .Include(ut => ut.Team)
                                         .ThenInclude(t => t.Lobbie)
                                      .FirstOrDefaultAsync();
@@ -149,5 +154,20 @@ namespace Services.LobbieService
             response.Data = true;
             return response;
         }
-    }
+
+        public async Task<Response<LobbieInfo>> RemoveLobbie(int lobbieId)
+        {
+            var response = new Response<LobbieInfo>();
+            var entity = _context.Lobbies.FirstOrDefault(l => l.Id == lobbieId);
+            if(entity == null)
+            {
+                response.Error = new Error(404, "Lobbie not found");
+                return response;
+            }
+            _context.Lobbies.Remove(entity);
+            await _context.SaveChangesAsync();
+            response.Data = new LobbieInfo(entity);
+            return response;
+        }
+     }
 }

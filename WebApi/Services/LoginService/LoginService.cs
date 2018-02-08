@@ -46,7 +46,9 @@ namespace Services.LoginService
             var tokenResponse = new TokenResponse
             {
                 Token = encodedJwt,
-                UserId = identity.Name
+                UserId = identity.Name,
+                NickName = identity.RoleClaimType
+                
             };
 
             response.Data = tokenResponse;
@@ -76,7 +78,7 @@ namespace Services.LoginService
             };
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity
-                (claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+                (claims, "Token", ClaimsIdentity.DefaultNameClaimType, user.NickName);
 
             response.Data = claimsIdentity;
             return response;
