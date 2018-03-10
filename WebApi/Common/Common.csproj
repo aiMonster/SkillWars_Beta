@@ -35,6 +35,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0\System.ComponentModel.Annotations.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,6 +54,7 @@
     <Compile Include="DTO\Account\ChangePasswordRequest.cs" />
     <Compile Include="DTO\Account\RegistrationDTO.cs" />
     <Compile Include="DTO\Account\RestorePasswordRequest.cs" />
+    <Compile Include="DTO\Account\SteamRegistrationDTO.cs" />
     <Compile Include="DTO\Account\UserDTO.cs" />
     <Compile Include="DTO\Account\UserInfo.cs" />
     <Compile Include="DTO\Communication\Error.cs" />
@@ -59,6 +64,14 @@
     <Compile Include="DTO\Lobbie\ParticipateLobbieRequest.cs" />
     <Compile Include="DTO\Lobbie\TeamDTO.cs" />
     <Compile Include="DTO\Lobbie\TeamInfo.cs" />
+    <Compile Include="DTO\SocketServer\BaseMessage.cs" />
+    <Compile Include="DTO\SocketServer\NewLobbie.cs" />
+    <Compile Include="DTO\SocketServer\RemovedLobbie.cs" />
+    <Compile Include="DTO\SocketServer\UserLeaved.cs" />
+    <Compile Include="DTO\SocketServer\UserParticipated.cs" />
+    <Compile Include="DTO\Steam\SteamPlayerSummaryDto.cs" />
+    <Compile Include="DTO\Steam\SteamPlayerSummaryResponse.cs" />
+    <Compile Include="DTO\Steam\SteamPlayerSummaryRootObject.cs" />
     <Compile Include="Entity\ConfirmationPasswordEntity.cs" />
     <Compile Include="Entity\LobbieEntity.cs" />
     <Compile Include="Entity\TeamEntity.cs" />
@@ -66,6 +79,7 @@
     <Compile Include="Entity\UserEntity.cs" />
     <Compile Include="Entity\UserTeamEntity.cs" />
     <Compile Include="Enums\LobbieStatusTypes.cs" />
+    <Compile Include="Enums\MessageTypes.cs" />
     <Compile Include="Enums\OperationResults.cs" />
     <Compile Include="Enums\TeamTypes.cs" />
     <Compile Include="Helpers\TimerConfigurator.cs" />
@@ -79,6 +93,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Extensions.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

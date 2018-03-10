@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebSocketLayer;
 
 namespace SkillWars.Controllers
 {
@@ -31,5 +32,13 @@ namespace SkillWars.Controllers
         {
             return "Nice Job, you are authorized";         
         }   
+
+        [AllowAnonymous]
+        [HttpGet("log")]
+        public async Task<List<string>> Logging()
+        {
+            return HardLogger.Logs;
+        }
+    
     }
 }

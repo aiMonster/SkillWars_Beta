@@ -8,6 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using WebSocketLayer.General.Interfaces;
+
+using Common.DTO.SocketServer;
 
 namespace SkillWars.Controllers
 {
@@ -15,10 +18,12 @@ namespace SkillWars.Controllers
     public class LobbiesController : Controller
     {
         private readonly ILobbieService _lobbieService;
+        private readonly ISkillWarsServer _server;
 
-        public LobbiesController(ILobbieService lobbieService)
+        public LobbiesController(ILobbieService lobbieService, ISkillWarsServer server)
         {
             _lobbieService = lobbieService;
+            _server = server;
         }
 
         [Authorize]
@@ -29,13 +34,20 @@ namespace SkillWars.Controllers
             {
                 return BadRequest(ModelState);
             }
-            return Ok(await _lobbieService.CreateLobbieAsync(request));
+
+            //var result = await _lobbieService.CreateLobbieAsync(request, Convert.ToInt32(User.GetUserId()));
+            //NewLobbie notifyLobbie = new NewLobbie(result);
+            //await SendNotifies(notifyLobbie);
+
+            return Ok(await _lobbieService.CreateLobbieAsync(request, Convert.ToInt32(User.GetUserId())));
         }
 
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetLobbies()
         {
+            _server.SendMessageForAll("pidors");
+            //await SendNotifies("ahah");
             return Ok(await _lobbieService.GetLobbiesAsync());
         }
 
@@ -48,6 +60,7 @@ namespace SkillWars.Controllers
             {
                 return StatusCode(response.Error.ErrorCode, response.Error);
             }
+            
             return Ok(response.Data);
         }
 
@@ -86,5 +99,7 @@ namespace SkillWars.Controllers
             }
             return Ok(response.Data);
         }
+
+        
     }
 }

@@ -18,6 +18,8 @@ namespace Common.Entity
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        public string SteamId { get; set; }
+
         public string Email { get; set; }
 
         public string NickName { get; set; }
@@ -49,8 +51,15 @@ namespace Common.Entity
             IsEmailConfirmed = false;
             PhoneNumber = data.PhoneNumber;
             UserTeams = new List<UserTeamEntity>();
-
         }
-        //public DateTime BirthDate { get; set; }
+
+        public UserEntity(string steamId, string nickName)
+        {
+            NickName = nickName;
+            SteamId = steamId;
+            RegistrationDate = DateTime.Now;
+            IsEmailConfirmed = false;
+            UserTeams = new List<UserTeamEntity>();
+        }       
     }
 }

@@ -12,18 +12,25 @@ using System.Text;
 using Common.Enums;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+using System.Net;
+using System.IO;
+using Common.DTO.SocketServer;
+
 namespace Services.LobbieService
 {
     public class LobbieService : ILobbieService
     {
         private readonly MSContext _context;
+       
+
 
         public LobbieService(MSContext context)
         {
-            _context = context;
+            _context = context;            
         }
 
-        public async Task<LobbieInfo> CreateLobbieAsync(LobbieDTO lobbie)
+        public async Task<LobbieInfo> CreateLobbieAsync(LobbieDTO lobbie, int userId)
         {
             LobbieEntity entity = new LobbieEntity(lobbie);
             
@@ -34,6 +41,15 @@ namespace Services.LobbieService
             await _context.Teams.AddAsync(new TeamEntity(entity.Id) { Type = TeamTypes.SecondTeam });
             await _context.SaveChangesAsync();
 
+            var team = await _context.Teams.Where(t => t.LobbieId == entity.Id && t.Type == TeamTypes.FirstTeam)
+                                            .Include(p => p.Lobbie)
+                                            .Include(p => p.UserTeams)
+                                            .FirstOrDefaultAsync();
+
+            team.UserTeams.Add(new UserTeamEntity() { UserId = userId, TeamId = team.Id, LobbieId = team.LobbieId });
+            await _context.SaveChangesAsync();
+
+            await SendNotifies(new NewLobbie(entity));
             return new LobbieInfo(entity);
         }
 
@@ -117,6 +133,8 @@ namespace Services.LobbieService
 
             team.UserTeams.Add(new UserTeamEntity() { UserId = userId, TeamId = team.Id, LobbieId = team.LobbieId });
             await _context.SaveChangesAsync();
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            await SendNotifies(new UserParticipated() { UserId = userId, TeamType = team.Type, LobbieId = team.LobbieId, NickName = user.NickName });
 
             response.Data = true;
             return response;
@@ -151,12 +169,15 @@ namespace Services.LobbieService
             //    await _context.SaveChangesAsync();
             //}
 
+            await SendNotifies(new UserLeaved() { UserId = userId, LobbieId = lobbieId });
             response.Data = true;
             return response;
         }
 
         public async Task<Response<LobbieInfo>> RemoveLobbie(int lobbieId)
         {
+            
+
             var response = new Response<LobbieInfo>();
             var entity = _context.Lobbies.FirstOrDefault(l => l.Id == lobbieId);
             if(entity == null)
@@ -167,7 +188,43 @@ namespace Services.LobbieService
             _context.Lobbies.Remove(entity);
             await _context.SaveChangesAsync();
             response.Data = new LobbieInfo(entity);
+
+            await SendNotifies(new RemovedLobbie() { LobbieId = entity.Id});
             return response;
         }
-     }
+
+        private async Task SendNotifies(object data)
+        {
+            string message = JsonConvert.SerializeObject(data);
+            Console.WriteLine(message);
+            try
+            {
+                WebRequest request = WebRequest.Create("http://localhost:8080/api/Lobbie");
+                request.Method = "POST";
+                var body = System.Text.Encoding.UTF8.GetBytes(message);
+                request.ContentType = "application/json";
+                request.ContentLength = body.Length;
+
+
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    response.Close();
+                }
+
+                Console.WriteLine("Запрос выполнен...");
+            }
+            catch
+            {
+                Console.WriteLine("Something wrong while connecting to the localhost");
+            }
+
+        }
+
+    }
 }

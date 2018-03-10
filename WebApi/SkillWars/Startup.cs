@@ -24,6 +24,8 @@ using Services.AccountService;
 using Services.SendingServices;
 using Services.TimeredFunctionsService;
 using Services.LobbieService;
+using WebSocketLayer.General.Interfaces;
+using WebSocketLayer.SocketServer;
 
 namespace SkillWars
 {
@@ -87,6 +89,7 @@ namespace SkillWars
 
             services.AddCors();
 
+            services.AddSingleton<ISkillWarsServer, SkillWarsServer>();
             services.AddTransient<ILoginService, LoginService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IEmailService, EmailService>();
@@ -97,10 +100,11 @@ namespace SkillWars
         }
 
         
-        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, MSContext context, ITimeredFunctionsService timeredService)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, MSContext context, ITimeredFunctionsService timeredService, ISkillWarsServer serv)
         {
             loggerFactory.AddConsole();
             SetUpLogger(env, loggerFactory);
+                      
 
             app.UseExceptionHandlerMiddleware();
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
@@ -110,7 +114,7 @@ namespace SkillWars
             app.UseAuthentication();
             //app.UseDefaultFiles();
             //app.UseStaticFiles();
-
+            
             app.UseSwagger();           
             app.UseSwaggerUI(c =>
             {
@@ -121,7 +125,7 @@ namespace SkillWars
         }
 
         private void SetUpLogger(IHostingEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
-        {
+        {            
             var logPath = Path.Combine(hostingEnvironment.ContentRootPath, "Logs");
             if (!Directory.Exists(logPath))
             {

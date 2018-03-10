@@ -13,6 +13,7 @@ namespace Common.Interfaces.Services
     public interface IAccountService
     {
         Task<Response<OperationResults>> Register(RegistrationDTO data, CancellationToken token = new CancellationToken());
+        Task<Response<OperationResults>> SteamRegister(SteamRegistrationDTO data, CancellationToken token = new CancellationToken());
         Task<Response<UserDTO>> ConfirmEmail(string token);
         Task<Response<UserDTO>> RemoveUser(int id);
 

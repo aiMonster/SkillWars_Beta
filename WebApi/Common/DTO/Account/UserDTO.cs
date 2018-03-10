@@ -10,6 +10,7 @@ namespace Common.DTO.Account
     public class UserDTO
     {
         public int Id { get; set; }
+        public string SteamId { get; set; }
         public string Email { get; set; }
         public string NickName { get; set; }
         public bool IsEmailConfirmed { get; set; }
@@ -21,6 +22,7 @@ namespace Common.DTO.Account
         public UserDTO(UserEntity entity)
         {
             Id = entity.Id;
+            SteamId = entity.SteamId;
             Email = entity.Email;
             NickName = entity.NickName;
             IsEmailConfirmed = entity.IsEmailConfirmed;

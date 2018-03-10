@@ -1,0 +1,3 @@
+userId - 76561198454392387
+Steam apiKey - 2A7BD196118B0A8438937D400A2FDB45
+http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={_steamOptions.ApiKey}&steamids={userId}

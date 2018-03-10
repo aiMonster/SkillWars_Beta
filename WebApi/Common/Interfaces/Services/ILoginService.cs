@@ -15,7 +15,8 @@ namespace Common.Interfaces.Services
         Task<IUser> GetUserByCreds(string login, string password);
 
         Task<Response<ClaimsIdentity>> GetIdentity(string login, string password);
+        Task<Response<ClaimsIdentity>> GetIdentity(string steamId);
 
-        Task<Response<TokenResponse>> GetToken(ClaimsIdentity identity);
+        Task<TokenResponse> GetToken(ClaimsIdentity identity);
     }
 }

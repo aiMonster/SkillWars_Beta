@@ -72,6 +72,59 @@ namespace Services.AccountService
             return response;
         }
 
+        public async Task<Response<OperationResults>> SteamRegister(SteamRegistrationDTO data, CancellationToken token = new CancellationToken())
+        {
+            var response = new Response<OperationResults>()
+            {
+                Data = OperationResults.Failed
+            };
+
+            var isEmailAlreadyUsed = await _context.Users.AnyAsync(p => p.Email == data.Email);
+            if (isEmailAlreadyUsed)
+            {
+
+                response.Error = new Error(400, "This email is already used, go to account page and add steam to your account");
+                return response;
+            }
+
+            
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.SteamId == data.SteamId);
+
+            if(user.IsEmailConfirmed || String.IsNullOrEmpty(user.Email))
+            {
+                response.Error = new Error(400, "Your email is already confirmed");
+                return response;
+            }
+
+            //check possible tokens and removing them          
+            _context.Tokens.RemoveRange(_context.Tokens.Where(t => t.UserId == user.Id).ToList());
+            await _context.SaveChangesAsync();
+
+            user.Email = data.Email;
+            user.PhoneNumber = data.PhoneNumber;
+            
+            await _context.SaveChangesAsync(token);
+
+            response.Data = OperationResults.Success;
+
+            var confirmationToken = Guid.NewGuid().ToString();
+            await _context.Tokens.AddAsync(new TokenEntity
+            {
+                UserId = user.Id,
+                Id = confirmationToken,
+                ExpirationDate = DateTime.UtcNow.AddDays(7)
+            });
+            await _context.SaveChangesAsync();
+
+            #if release
+            var apiPath = _config["AppLinks:frontPath"] + "confirm-register?token=" + confirmationToken;
+            var link = "<a href='" + apiPath + "'>link</a>";
+
+            await _emailService.SendMail(user.Email, _config["Register"] + link, "Registration");
+            #endif
+            return response;
+        }
+
         public async Task<Response<UserDTO>> ConfirmEmail(string confirmationToken)
         {
             var response = new Response<UserDTO>();

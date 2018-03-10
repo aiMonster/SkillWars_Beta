@@ -31,7 +31,6 @@ namespace SkillWars.Controllers
         public async Task<IActionResult> Register([FromBody]RegistrationDTO request)
         {
             if (!ModelState.IsValid)
-
             {
                 return BadRequest(ModelState);
             }
@@ -42,6 +41,26 @@ namespace SkillWars.Controllers
             }
 
             var response = await _accountService.Register(request);
+
+            if (response.Error != null)
+            {
+                return StatusCode(response.Error.ErrorCode, response.Error);
+            }
+            return Ok();
+        }
+
+
+
+        [AllowAnonymous]
+        [HttpPost("SteamRegister")]
+        public async Task<IActionResult>SteamRegister([FromBody]SteamRegistrationDTO request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _accountService.SteamRegister(request);
 
             if (response.Error != null)
             {
@@ -130,7 +149,7 @@ namespace SkillWars.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("token")]
+        [HttpPost("Token")]
         public async Task<IActionResult> Token([FromBody]LoginRequest request)
         {
             if (!ModelState.IsValid)
@@ -144,13 +163,20 @@ namespace SkillWars.Controllers
                 return StatusCode(identity.Error.ErrorCode, identity.Error);
             }
 
-            var response = await _loginService.GetToken(identity.Data);
-            if (response.Error != null)
+            return Ok(await _loginService.GetToken(identity.Data));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("Token/{steamId}")]
+        public async Task<IActionResult> SteamToken([FromRoute]string steamId)
+        {
+            var identity = await _loginService.GetIdentity(steamId);
+            if (identity.Error != null)
             {
                 return StatusCode(identity.Error.ErrorCode, identity.Error);
             }
-
-            return Ok(response.Data);
+            
+            return Ok(await _loginService.GetToken(identity.Data));
         }
 
         [AllowAnonymous]
