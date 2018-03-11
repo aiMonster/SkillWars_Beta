@@ -26,6 +26,7 @@ using Services.TimeredFunctionsService;
 using Services.LobbieService;
 using WebSocketLayer.General.Interfaces;
 using WebSocketLayer.SocketServer;
+using Services.PaymentService;
 
 namespace SkillWars
 {
@@ -95,6 +96,7 @@ namespace SkillWars
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ILobbieService, LobbieService>();
             services.AddTransient<ITimeredFunctionsService, TimeredFunctionsService>();
+            services.AddTransient<IPaymentService, PaymentService>();
 
             services.AddMvc();
         }

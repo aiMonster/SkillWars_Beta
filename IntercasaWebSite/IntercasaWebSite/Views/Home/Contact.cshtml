@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Contact";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<address>
+    One Microsoft Way<br />
+    Redmond, WA 98052-6399<br />
+    <abbr title="Phone">P:</abbr>
+    425.555.0100
+</address>
+
+<form id="payment" name="payment" method="post" action="https://sci.interkassa.com/" enctype="utf-8">
+    <input type="hidden" name="ik_co_id" value="5aa4fcb33b1eafb5088b4569" />
+    <input name="ik_pm_no" value="1" />
+    <input name="ik_am" value="100.00" />
+    <input type="hidden" name="ik_cur" value="RUB" />
+    <input type="hidden" name="ik_desc" value="Add money on my balance" />
+    <input type="submit" value="Pay">
+</form>
+
+<address>
+    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
+    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
+</address>
